@@ -1,21 +1,24 @@
-#define N_MAX 500000000
+#define N 500000000
 
+#include "time.h"
 #include "math.h"
 #include "stdio.h"
 
-double pi(int N) {
+int main() {
+	struct timespec start, end;
+	clock_gettime(CLOCK_MONOTONIC_RAW, &start);
+
 	double pi = 0;
 
 	for (int i = 0; i < N; i++)
 		pi += pow(-1, i) / (2 * i + 1);
 
-	printf("%lf\n", pi * 4);
+	printf("N = %d, отн. погрешность: %lf%%\n", N, 100*fabs(M_PI - 4*pi)/M_PI);
 
-	return 4*pi;
-}
+	clock_gettime(CLOCK_MONOTONIC_RAW, &end);
+	printf("Time taken: %lf sec.\n",
+		end.tv_sec-start.tv_sec
+		+ 0.000000001*(end.tv_nsec-start.tv_nsec));
 
-int main() {
-	for (int i = 5; i <= N_MAX; i *= 10) {
-		printf("N = %d, отн. погрешность: %lf%%\n", i, 100*fabs(M_PI - pi(i))/M_PI);
-	}
+	return 0;
 }
